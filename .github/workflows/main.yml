@@ -1,0 +1,32 @@
+name: Publish Helm Chart to Quay.io
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
+
+jobs:
+  build-and-publish-chart:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+      - name: Set up Helm
+        uses: azure/setup-helm@v1
+      - name: Lint Helm Chart
+        run: helm lint ./
+      - name: Package Helm Chart
+        run: helm package ./ -d ./
+      - name: Log in to Quay.io
+        uses: docker/login-action@v1
+        with:
+          registry: quay.io
+          username: ${{ secrets.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_PASSWORD }}
+      - name: Push Chart to Quay.io
+        run: |
+          export HELM_EXPERIMENTAL_OCI=1
+          helm chart save ./-*.tgz quay.io/your-username/your-repo:tag
+          helm chart push quay.io/your-username/your-repo:tag
