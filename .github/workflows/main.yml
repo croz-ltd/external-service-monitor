@@ -17,10 +17,9 @@ jobs:
         uses: azure/setup-helm@v4.2.0
       - name: Lint Helm Chart
         run: helm lint ./
-      - name: Package Helm Chart
-        run: helm package ./ -d ./
-      - name: Push Chart to Quay.io
+      - name: Package and Push Chart to Quay.io
         run: |
+          helm package ./ -d ./
           export HELM_EXPERIMENTAL_OCI=1
           helm registry login -u ${{ secrets.QUAY_USERNAME }} -p ${{ secrets.QUAY_PASSWORD }} quay.io
           helm push ./-*.tgz oci://quay.io/crozltd
