@@ -28,5 +28,6 @@ jobs:
       - name: Push Chart to Quay.io
         run: |
           export HELM_EXPERIMENTAL_OCI=1
-          helm chart save ./-*.tgz quay.io/your-username/your-repo:tag
-          helm chart push quay.io/your-username/your-repo:tag
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+          helm chart save ./-*.tgz quay.io/crozltd/external-service-monitor:${TAG_NAME}
+          helm chart push quay.io/crozltd/external-service-monitor:${TAG_NAME}
