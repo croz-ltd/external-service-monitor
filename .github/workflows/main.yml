@@ -19,15 +19,9 @@ jobs:
         run: helm lint ./
       - name: Package Helm Chart
         run: helm package ./ -d ./
-      - name: Log in to Quay.io
-        uses: docker/login-action@v1
-        with:
-          registry: quay.io
-          username: ${{ secrets.QUAY_USERNAME }}
-          password: ${{ secrets.QUAY_PASSWORD }}
       - name: Push Chart to Quay.io
         run: |
           export HELM_EXPERIMENTAL_OCI=1
-          TAG_NAME=${GITHUB_REF#refs/tags/}
-          helm chart save ./-*.tgz quay.io/crozltd/external-service-monitor:${TAG_NAME}
-          helm chart push quay.io/crozltd/external-service-monitor:${TAG_NAME}
+          helm registry login -u ${{ secrets.QUAY_USERNAME }} -p ${{ secrets.QUAY_PASSWORD }} quay.io
+          helm push ./-*.tgz oci://quay.io/crozltd
+          helm registry logout quay.io
