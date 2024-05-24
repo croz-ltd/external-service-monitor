@@ -1,0 +1,24 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    external-service-monitor: {{ .Release.Name }}
+spec:
+  {{- if .Values.scrape }}
+  endpoints:
+    {{- range $scrape := .Values.scrape }}
+    - port: {{ $.Values.targetService.scheme }}
+      scheme: {{ $.Values.targetService.scheme }}
+      tlsConfig:
+        insecureSkipVerify: {{ $.Values.targetService.insecureSkipVerify }}
+{{ toYaml $scrape | indent 6 }}
+    {{- end }}
+  {{- end }}
+  jobLabel: {{ .Release.Name }}
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
+  selector:
+    matchLabels:
+      target: {{ .Release.Name }}

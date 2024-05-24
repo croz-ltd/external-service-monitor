@@ -1,0 +1,11 @@
+targetService:
+  ip: 11.11.11.2
+  hostname: target.service.com
+  port: 443
+  scheme: https
+  insecureSkipVerify: false
+
+# Available options can be found here https://docs.openshift.com/container-platform/4.15/rest_api/monitoring_apis/servicemonitor-monitoring-coreos-com-v1.html#spec-endpoints-2
+scrape:
+  - interval: 13s
+    path: /metrics

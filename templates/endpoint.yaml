@@ -1,0 +1,16 @@
+kind: Endpoints
+apiVersion: v1
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    external-service-monitor: {{ .Release.Name }}
+subsets:
+{{- with .Values.targetService }}
+  - addresses:
+      - ip: {{ .ip }}
+        hostname: {{ .hostname }}
+    ports:
+      - name: {{ .scheme }}
+        protocol: TCP
+        port: {{ .port }}
+{{- end -}}

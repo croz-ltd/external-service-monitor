@@ -1,0 +1,16 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    external-service-monitor: {{ .Release.Name }}
+spec:
+  ports:
+  {{- with .Values.targetService }}
+    - name: {{ .scheme }}
+      protocol: TCP
+      port: {{ .port }}
+      targetPort: {{ .scheme }}
+  {{- end }}
+  clusterIP: None
+  type: ClusterIP
