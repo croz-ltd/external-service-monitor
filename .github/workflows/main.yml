@@ -22,5 +22,5 @@ jobs:
           helm package ./ -d ./
           export HELM_EXPERIMENTAL_OCI=1
           helm registry login -u ${{ secrets.QUAY_USERNAME }} -p ${{ secrets.QUAY_PASSWORD }} quay.io
-          helm push ./-*.tgz oci://quay.io/crozltd
+          helm push ./*.tgz oci://quay.io/crozltd
           helm registry logout quay.io
