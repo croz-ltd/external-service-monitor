@@ -10,6 +10,10 @@ spec:
     {{- range $scrape := .Values.scrape }}
     - port: {{ $.Values.targetService.scheme }}
       scheme: {{ $.Values.targetService.scheme }}
+      relabelings:
+        - action: replace
+          replacement: "{{ $.Values.targetService.hostname }}:{{ $.Values.targetService.port }}"
+          targetLabel: __address__
       tlsConfig:
         insecureSkipVerify: {{ $.Values.targetService.insecureSkipVerify }}
 {{ toYaml $scrape | indent 6 }}
